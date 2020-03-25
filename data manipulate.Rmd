@@ -8,33 +8,39 @@ output:
     css: [default, my-theme.css]
     lib_dir: libs
     nature:
+      beforeInit: "macros.js"
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "")
+```
 
-# Download first
+# Download: <https://bit.ly/39a7RCI>
 
-Short url: <https://bit.ly/39a7RCI>
 .center[
 ![](figure/qr.ioi.tw.png)
 ]
 
 ```{r message=FALSE, warning=FALSE}
 # install.packages(tidyverse)
-library(tidyverse)
+library(tidyverse) # including dplyr, tidyr, & ggplot ...
 ```
 
 ---
 
 # Outline
 
+.Large[
 - introduction
 - data.frame
 - dplyr
 - tidyr
 - ggplot2
+]
+
 
 ---
 
@@ -55,21 +61,27 @@ Goal of Data Preprocessing
 - The Committee of Presidents of Statistical Societies Awards
 - [tidyverse](https://www.tidyverse.org/)
 
-![](figure/HadleyWickham-R.jpg)
+![:scale 90%](figure/HadleyWickham-R.jpg)
 
 ---
 
+.center[
 ![](figure/ChartHadley.png)
+]
 
 ---
 
+.center[
 ![](figure/package download.png)
+]
 
 ---
 
 # R packages for data science
 
-![](figure/tidyverse_data_science.png)
+.center[
+![:scale 90%](figure/tidyverse_data_science.png)
+]
 
 ---
 class: inverse, center, middle
@@ -79,13 +91,13 @@ class: inverse, center, middle
 
 ---
 
-# data.frame create
+# data.frame() create
 
 ```{r}
-student <- data.frame(ID = LETTERS[1:12], 
-                      math = round(rnorm(12, 50, 15), 1),
-                      chinese = seq(4, 92, length.out = 12))
-class(student)
+student <- data.frame(
+  ID = LETTERS[1:12], 
+  math = round(rnorm(12, 50, 15), 1),
+  chinese = seq(4, 92, length.out = 12))
 student
 ```
 
@@ -95,17 +107,17 @@ student
 
 load data
 ```{r}
-ebg <- read.csv("data/001_b_1110_1_1_p1.csv", 
-                fileEncoding = "UTF-8")
-head(ebg)
-class(ebg)
+ebg001 <- read.csv("data/001_b_1110_1_1_p1.csv", 
+                   fileEncoding = "UTF-8")
+head(ebg001)
+class(ebg001)
 ```
 
 ---
 
 # data.frame(): read
 
-```{r, message=FALSE}
+```{r, eval=FALSE}
 # []
 ebg[1]
 ebg["p1Cash"]
@@ -153,7 +165,8 @@ flights
 # select()
 
 ```{r}
-select(flights, year, month, day) # select(flights, year:day)
+flight1 <- select(flights, year:day, tailnum, arr_delay, dep_delay, distance, air_time)
+flight1
 ```
 
 ---
@@ -161,7 +174,8 @@ select(flights, year, month, day) # select(flights, year:day)
 # filter()
 
 ```{r}
-filter(flights, year %in% c(2012, 2013), month == 1, day < 4)
+filter(flight1, year %in% c(2012, 2013), 
+       month == 1, day < 4)
 ```
 
 ---
@@ -169,8 +183,8 @@ filter(flights, year %in% c(2012, 2013), month == 1, day < 4)
 # sample_n() and sample_frac()
 
 ```{r}
-sample_n(flights, 10) # fixed number
-sample_frac(flights, 0.01) # fixed fraction
+sample_n(flight1, 3) # fixed number
+sample_frac(flight1, 0.002) # fixed fraction
 ```
 
 ---
@@ -178,7 +192,7 @@ sample_frac(flights, 0.01) # fixed fraction
 # arrange()
 
 ```{r}
-arrange(flights, year, month, day)
+arrange(flight1, year, month, day)
 ```
 
 ---
@@ -186,7 +200,7 @@ arrange(flights, year, month, day)
 # arrange(desc())
 
 ```{r}
-arrange(flights, desc(arr_delay))
+arrange(flight1, desc(arr_delay))
 ```
 
 ---
@@ -194,7 +208,7 @@ arrange(flights, desc(arr_delay))
 # mutate()
 
 ```{r}
-mutate(flights,
+mutate(flight1,
        gain = arr_delay - dep_delay,
        speed = distance / air_time * 60)
 ```
@@ -206,7 +220,7 @@ mutate(flights,
 
 ```{r}
 select(
-  mutate(flights, 
+  mutate(flight1, 
          gain = arr_delay - dep_delay, 
          speed = distance / air_time * 60
   ),
@@ -216,10 +230,10 @@ select(
 
 ---
 
-# transmute() = select(mutate())
+# transmute() == select(mutate())
 
 ```{r}
-transmute(flights, 
+transmute(flight1, 
           gain = arr_delay - dep_delay,
           speed = distance / air_time * 60)
 ```
@@ -228,11 +242,13 @@ transmute(flights,
 
 # nested structure 
 
-```{r, echo=FALSE}
+It is very hard to read ...
+
+```{r, eval=FALSE}
 filter(
   summarise(
     select(
-      group_by(flights, year, month, day),
+      group_by(flight1, year, month, day),
       arr_delay, dep_delay
     ),
     arr = mean(arr_delay, na.rm = TRUE),
@@ -248,8 +264,9 @@ filter(
 # pip operator %>% 
 
 ```{r}
-flights %>% 
-  mutate(gain = arr_delay - dep_delay, speed = distance / air_time * 60) %>% 
+flight1 %>% 
+  mutate(gain = arr_delay - dep_delay, 
+         speed = distance / air_time * 60) %>% 
   select(gain, speed)
 ```
 
@@ -258,7 +275,7 @@ flights %>%
 # summarise()
 
 ```{r}
-flights %>% 
+flight1 %>% 
   summarise(delay_mean = mean(dep_delay, na.rm = TRUE), 
             delay_sd = sd(dep_delay, na.rm = TRUE))
 ```
@@ -268,7 +285,7 @@ flights %>%
 # group_by() %>% summarise()
 
 ```{r}
-flights %>%
+flight1 %>%
   group_by(year, month) %>% 
   summarise(delay_mean = mean(dep_delay, na.rm = TRUE), 
             delay_sd = sd(dep_delay, na.rm = TRUE))
@@ -276,8 +293,73 @@ flights %>%
 
 
 ---
-# left_join(), right_join(), & inner_join()
 
+# left_join()
+
+```{r}
+flights2 <- flights %>% 
+  select(month:day, tailnum, carrier) %>% 
+  head(2)
+
+data(airlines, package = "nycflights13")
+airlines %>% head(3)
+```
+
+---
+
+# left_join()
+
+```{r}
+flights2 %>% 
+  left_join(airlines)
+```
+
+---
+
+# left_join, right_join()
+
+.pull-left[
+```{r}
+(df1 <- tibble(
+  x = c(1, 2), y = 2:1))
+(df2 <- tibble(
+  x = c(1, 3), a = 10, 
+  b = "HI"))
+```
+]
+
+--
+
+.pull-right[
+```{r}
+df1 %>% left_join(df2)
+df1 %>% right_join(df2)
+```
+]
+
+---
+
+# inner_join()
+
+```{r}
+df1 %>% inner_join(df2)
+```
+
+---
+
+# Practice
+
+試著將同一組的 player 1 和 player 2 這兩筆資料給合併在同一個表格
+
+--
+
+```{r}
+ebg002 <- read.csv("data/002_b_1110_1_1_p2.csv", 
+                   fileEncoding = "UTF-8")
+ebg_g1 <- ebg001 %>% 
+  left_join(ebg002) 
+DT::datatable(ebg_g1)
+```
 
 
 ---
@@ -305,8 +387,8 @@ student
 
 ```{r}
 student_long <- pivot_longer(student, 
-                             cols = c("math", "chinese", "psychology"), # -ID 
-                             names_to = "subjects", values_to = "score")
+  cols = c("math", "chinese", "psychology"), # -ID 
+  names_to = "subjects", values_to = "score")
 student_long
 ```
 
@@ -316,7 +398,7 @@ student_long
 
 ```{r}
 student_wide <- pivot_wider(student_long,
-                            names_from = "subjects", values_from = "score")
+  names_from = "subjects", values_from = "score")
 student_wide
 ```
 
@@ -324,20 +406,17 @@ student_wide
 
 # Practice
 
-請對 `ebg` 這筆資料，利用 `boxplot(y~group, data)` 畫出，依照不同 Money 種類 (group: p1Cash, p1Stock, p1TotalAsset) 的價格分佈。
+試著把剛剛同組的 `ebg` 資料，利用 `boxplot(y~group, data)`，依照不同「資產類型」(Cash, Stock, Asset)，畫出它分佈。
 
 --
 
 ```{r}
-ebg_long <- pivot_longer(ebg, cols = c("p1Cash", "p1Stock", "p1TotalAsset"),
-                         names_to = "money", values_to = "value")
+ebg_long <- ebg_g1 %>% 
+    pivot_longer(
+      cols = c("p1Cash":"p1TotalAsset", "p2Cash":"p2TotalAsset"),
+      names_to = "money", values_to = "value")
 boxplot(value ~ money, data = ebg_long)
 ```
-
----
-class: inverse, center, middle
-
-# ggplot2
 
 ---
 
@@ -361,5 +440,21 @@ Link: <https://rstudio.com/resources/cheatsheets/>
 In RStudio: Help > Cheetsheets > ...
 
 ---
+class: inverse, center, middle
 
+# ggplot2
+
+---
+
+---
+---
+---
+---
+---
 # References
+
+- `vignette("dplyr", package = "dplyr")`
+- `vignette("", package = "dplyr")`
+- ``
+
+

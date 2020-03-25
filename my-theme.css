@@ -1,5 +1,5 @@
 .remark-slide-content {
-    font-size: 28px;
+  font-size: 28px;
 }
 .remark-code {
   font-size: 24px;
@@ -59,7 +59,7 @@ h1{
   font-size: 48px;
 }
 
-.inverse h2{
+.inverse h1{
   color: #FF1B70;
 }
 
@@ -69,7 +69,6 @@ h1{
   padding-right: 40px;
   padding-bottom: 10px;
 }
-
 
 .black { color: black; }
 .white { color: white; }
@@ -107,7 +106,7 @@ h1{
   height:20em;
   overflow-y: scroll;
 }
-  .scroll-box-22 {
+.scroll-box-22 {
   height:22em;
   overflow-y: scroll;
 }
@@ -126,7 +125,5 @@ h1{
 
 .center_fig {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
+  margin: auto;
 }
