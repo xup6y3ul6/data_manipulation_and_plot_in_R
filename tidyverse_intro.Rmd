@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE, comment = "",
                       out.width = "80%")
 ```
 
-# Download: <https://bit.ly/39a7RCI>
+# Download: <http://tiny.cc/2ho0lz>
 
 .center[![](figure/qr.ioi.tw.png)]
 
@@ -60,6 +60,7 @@ Goal of Data Preprocessing
 - The Man Who Revolutionized R
 - The Committee of Presidents of Statistical Societies Awards
 - [tidyverse](https://www.tidyverse.org/)
+
 .center[![:scale 90%](figure/HadleyWickham-R.jpg)]
 
 ---
