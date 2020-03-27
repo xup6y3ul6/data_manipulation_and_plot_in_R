@@ -16,16 +16,14 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, comment = "",
-                      fig.align = "center", 
+                      dpi = 300, fig.align = "center", 
                       fig.width = 6, fig.asp = 0.618,
                       out.width = "80%")
 ```
 
 # Download: <https://bit.ly/39a7RCI>
 
-.center[
-![](figure/qr.ioi.tw.png)
-]
+.center[![](figure/qr.ioi.tw.png)]
 
 ```{r message=FALSE, warning=FALSE}
 # install.packages(tidyverse)
@@ -43,7 +41,6 @@ library(tidyverse) # including dplyr, tidyr, & ggplot ...
 - tidyr
 - ggplot2
 ]
-
 
 ---
 
@@ -63,34 +60,26 @@ Goal of Data Preprocessing
 - The Man Who Revolutionized R
 - The Committee of Presidents of Statistical Societies Awards
 - [tidyverse](https://www.tidyverse.org/)
-
-![:scale 90%](figure/HadleyWickham-R.jpg)
-
----
-
-.center[
-![](figure/ChartHadley.png)
-]
+.center[![:scale 90%](figure/HadleyWickham-R.jpg)]
 
 ---
 
-.center[
-![](figure/package download.png)
-]
+.center[![](figure/ChartHadley.png)]
+
+---
+
+.center[![](figure/package download.png)]
 
 ---
 
 # R packages for data science
 
-.center[
-![:scale 90%](figure/tidyverse_data_science.png)
-]
+.center[![:scale 90%](figure/tidyverse_data_science.png)]
 
 ---
 class: inverse, center, middle
 
 # data.frame
-
 
 ---
 
@@ -571,7 +560,7 @@ ggplot(mtcars, aes(x = mpg))
 
 ---
 
-# geom: 
+# geom: histogram
 
 ```{r}
 ggplot(mtcars, aes(x = mpg)) +
@@ -650,7 +639,7 @@ g2 + theme_classic()
 
 # Practice 3: line chart
 
-試著用折線圖 `geom_line()` 對 `ebg` 這筆資料，看股票價格 (StockPrice) 隨回合數 (Trials) 的變化
+試著用折線圖 `geom_line()` 對 `ebg` 這筆資料，看股票價格 (StockPrice) 隨回合數 (Trials) 的變化。
 
 --
 
@@ -663,7 +652,7 @@ ggplot(ebg_g1, aes(x = Trials, y = StockPrice)) +
 
 # Practice 4
 
-嘗試先用先前所學的，將 `ebg` 中 p1 和 p2 的現金放在同一個變項中，再利用 `geom_line()` 畫出兩為玩家在第 21 ~ 60 回和的現金變化折線圖
+嘗試先用先前所學的，將 `ebg` 中 p1 和 p2 的現金放在同一個變項中，再利用 `geom_line()` 畫出兩為玩家在第 21 ~ 60 回和的現金變化折線圖。
 
 .scroll-box-16[
 ```{r}
