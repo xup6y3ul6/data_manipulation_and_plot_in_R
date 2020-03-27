@@ -1,7 +1,7 @@
 ---
 title: "Data Manipulation and Plot in R"
-subtitle: "tidyr, dplyr and ggplot2"
-author: "林子堯"
+subtitle: "dplyr, tidyr and ggplot2"
+author: "林子堯 楊昊紘"
 date: "2020/03/28 Sat."
 output:
   xaringan::moon_reader:
@@ -49,7 +49,7 @@ library(tidyverse) # including dplyr, tidyr, & ggplot ...
 Data preprocessing takes 50-80% of your time in data analysis
 
 Goal of Data Preprocessing  
-- ake data suitable to use with a particular piece of software (i.e. R, - Python)  
+- Make data suitable to use with a particular piece of software (i.e. R, Python)  
 - Reveal important information  
 - Extract variables to analyze
 
@@ -91,7 +91,7 @@ class: inverse, center, middle
 
 ---
 
-# data.frame() create
+# data.frame(): create
 
 ```{r}
 student <- data.frame(
@@ -165,7 +165,8 @@ flights
 # select()
 
 ```{r}
-flight1 <- select(flights, year:day, tailnum, arr_delay, dep_delay, distance, air_time)
+flight1 <- select(flights, month:day, tailnum, 
+                  arr_delay, dep_delay, distance, air_time)
 flight1
 ```
 
@@ -174,8 +175,7 @@ flight1
 # filter()
 
 ```{r}
-filter(flight1, year %in% c(2012, 2013), 
-       month == 1, day < 4)
+filter(flight1, month == 5, day %in% c(1, 2, 3), arr_delay > 0)
 ```
 
 ---
@@ -183,8 +183,8 @@ filter(flight1, year %in% c(2012, 2013),
 # sample_n() and sample_frac()
 
 ```{r}
-sample_n(flight1, 3) # fixed number
-sample_frac(flight1, 0.002) # fixed fraction
+sample_n(flight1, 4) # fixed number
+sample_frac(flight1, 0.00001) # fixed fraction
 ```
 
 ---
@@ -192,7 +192,7 @@ sample_frac(flight1, 0.002) # fixed fraction
 # arrange()
 
 ```{r}
-arrange(flight1, year, month, day)
+arrange(flight1, distance)
 ```
 
 ---
@@ -200,7 +200,7 @@ arrange(flight1, year, month, day)
 # arrange(desc())
 
 ```{r}
-arrange(flight1, desc(arr_delay))
+arrange(flight1, desc(month), desc(day))
 ```
 
 ---
@@ -248,7 +248,7 @@ It is very hard to read ...
 filter(
   summarise(
     select(
-      group_by(flight1, year, month, day),
+      group_by(flight1, month, day),
       arr_delay, dep_delay
     ),
     arr = mean(arr_delay, na.rm = TRUE),
@@ -261,7 +261,7 @@ filter(
 
 ---
 
-# pip operator %>% 
+# pipe operator %>%
 
 ```{r}
 flight1 %>% 
@@ -286,7 +286,7 @@ flight1 %>%
 
 ```{r}
 flight1 %>%
-  group_by(year, month) %>% 
+  group_by(month) %>% 
   summarise(delay_mean = mean(dep_delay, na.rm = TRUE), 
             delay_sd = sd(dep_delay, na.rm = TRUE))
 ```
@@ -296,14 +296,20 @@ flight1 %>%
 
 # left_join()
 
+.pull-left[
 ```{r}
 flights2 <- flights %>% 
-  select(month:day, tailnum, carrier) %>% 
-  head(2)
-
-data(airlines, package = "nycflights13")
-airlines %>% head(3)
+  select(month:day, tailnum, carrier) 
+flights2 %>% head()
 ```
+]
+
+.pull-right[
+```{r}
+data(airlines, package = "nycflights13")
+airlines %>% head()
+```
+]
 
 ---
 
@@ -316,30 +322,71 @@ flights2 %>%
 
 ---
 
-# left_join, right_join()
+# left_join
 
 .pull-left[
 ```{r}
-(df1 <- tibble(
-  x = c(1, 2), y = 2:1))
-(df2 <- tibble(
-  x = c(1, 3), a = 10, 
-  b = "HI"))
+(df1 <- tibble(x = c(1, 2), 
+               y = 2:1))
+```
+]
+
+.pull-right[
+```{r}
+(df2 <- tibble(x = c(1, 3), 
+  a = 10, b = "HI"))
 ```
 ]
 
 --
 
-.pull-right[
 ```{r}
 df1 %>% left_join(df2)
-df1 %>% right_join(df2)
+```
+
+---
+
+# right_join()
+
+.pull-left[
+```{r}
+(df1 <- tibble(x = c(1, 2), 
+               y = 2:1))
 ```
 ]
+
+.pull-right[
+```{r}
+(df2 <- tibble(x = c(1, 3), 
+  a = 10, b = "HI"))
+```
+]
+
+--
+
+```{r}
+df1 %>% right_join(df2)
+```
 
 ---
 
 # inner_join()
+
+.pull-left[
+```{r}
+(df1 <- tibble(x = c(1, 2), 
+               y = 2:1))
+```
+]
+
+.pull-right[
+```{r}
+(df2 <- tibble(x = c(1, 3), 
+  a = 10, b = "HI"))
+```
+]
+
+--
 
 ```{r}
 df1 %>% inner_join(df2)
@@ -347,7 +394,7 @@ df1 %>% inner_join(df2)
 
 ---
 
-# Practice
+# Practice 1
 
 試著將同一組的 player 1 和 player 2 這兩筆資料給合併在同一個表格
 
@@ -358,9 +405,17 @@ ebg002 <- read.csv("data/002_b_1110_1_1_p2.csv",
                    fileEncoding = "UTF-8")
 ebg_g1 <- ebg001 %>% 
   left_join(ebg002) 
-DT::datatable(ebg_g1)
 ```
 
+---
+
+# Practice 1
+
+試著將同一組的 player 1 和 player 2 這兩筆資料給合併在同一個表格
+
+```{r}
+DT::datatable(ebg_g1)
+```
 
 ---
 class: inverse, center, middle
@@ -371,7 +426,7 @@ class: inverse, center, middle
 
 # long vs. wide table
 
-![](figure/long-wide table.jpg)
+![:scale 90%](figure/long-wide table.jpg)
 
 ---
 
@@ -422,14 +477,14 @@ boxplot(value ~ money, data = ebg_long)
 
 # [Cheetsheet](https://www.rstudio.org/links/data_transformation_cheat_sheet)
 
-![](data-transformation.jpg)
+![](figure/data-transformation.jpg)
 
 ---
 
 # [Cheetsheet](https://www.rstudio.org/links/data_transformation_cheat_sheet)
 
 
-![](data-transformation 2.jpg)
+![](figure/data-transformation 2.jpg)
 
 ---
 
