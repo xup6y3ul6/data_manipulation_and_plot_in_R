@@ -94,7 +94,7 @@ student <- data.frame(
 student
 ```
 
---- 
+---
 
 # data.frame(): create
 
@@ -104,7 +104,7 @@ ebg_011 <- read.csv("data/011_b_1114_1_1_p1.csv",
                    fileEncoding = "UTF-8")
 head(ebg_011)
 class(ebg_011)
-```
+````
 
 ---
 
@@ -390,7 +390,7 @@ df1 %>% inner_join(df2)
 
 # Practice 1
 
-試著將同一組的 player 1 和 player 2 這兩筆資料給合併在同一個表格
+試著將同一組的 subject 011 和 012 這兩筆資料給合併在同一個表格
 
 --
 
@@ -405,7 +405,7 @@ ebg_g1 <- ebg_011 %>%
 
 # Practice 1
 
-試著將同一組的 player 1 和 player 2 這兩筆資料給合併在同一個表格
+試著將同一組的 subject 011 和 012 這兩筆資料給合併在同一個表格
 
 .scroll-box-18[.small[
 ```{r echo=FALSE}
@@ -414,6 +414,14 @@ DT::datatable(ebg_g1,
                          fixedColumns = TRUE))
 ```
 ]]
+
+---
+
+# Practice 2
+
+試著用用看 subject 001 和 002，將兩人的資料合併成一組。
+
+有發現任何問題嗎？
 
 ---
 
@@ -463,7 +471,7 @@ student
 
 ```{r}
 student_long <- pivot_longer(student, 
-  cols = c("math", "chinese", "psychology"), # -ID 
+  cols = - ID, 
   names_to = "subjects", values_to = "score")
 student_long
 ```
@@ -504,22 +512,13 @@ DT::datatable(ebg_long,
 
 ---
 
-# Practice 2
+# Practice 3
 
 試著把剛剛同組的 `ebg` 資料，利用 `boxplot(y~group, data)`，依照不同「資產類型」(Cash, Stock, Asset)，畫出它分佈。
 
 ```{r}
 boxplot(value ~ money, data = ebg_long)
 ```
-
-
----
-
-# Practice 3
-
-試著用用看 subject 001 和 002，將兩人的資料合併成一組。
-
-有發現任何問題嗎？
 
 ---
 class: inverse, center, middle
@@ -620,6 +619,14 @@ g + facet_wrap(~cyl)
 
 ```{r}
 (g1 <- g + stat_smooth(method = "lm"))
+```
+
+---
+
+# stat: loess regression
+
+```{r}
+(g1 <- g + stat_smooth(method = "loess"))
 ```
 
 ---
