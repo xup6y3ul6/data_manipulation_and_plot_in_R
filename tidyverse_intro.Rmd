@@ -158,8 +158,8 @@ flights
 # select()
 
 ```{r}
-flight1 <- select(flights, month:day, tailnum, 
-                  arr_delay, dep_delay, distance, air_time)
+flight1 <- select(flights, month:day, carrier, arr_delay, 
+                  dep_delay, distance, air_time)
 flight1
 ```
 
@@ -168,7 +168,8 @@ flight1
 # filter()
 
 ```{r}
-filter(flight1, month == 5, day %in% c(1, 2, 3), arr_delay > 0)
+filter(flight1, carrier == "HA", month %in% c(4, 5), 
+       arr_delay > 0)
 ```
 
 ---
@@ -214,8 +215,8 @@ mutate(flight1,
 ```{r}
 select(
   mutate(flight1, 
-         gain = arr_delay - dep_delay, 
-         speed = distance / air_time * 60
+    gain = arr_delay - dep_delay, 
+    speed = distance / air_time * 60
   ),
   gain, speed
 )
@@ -406,15 +407,36 @@ ebg_g1 <- ebg_011 %>%
 
 試著將同一組的 player 1 和 player 2 這兩筆資料給合併在同一個表格
 
-.scroll-box-18[
-.small[
+.scroll-box-18[.small[
 ```{r echo=FALSE}
 DT::datatable(ebg_g1,
               options = list(scrollX = TRUE,
                          fixedColumns = TRUE))
 ```
-]
-]
+]]
+
+---
+
+# RStudio cheetsheets 
+
+[Cheetsheet of dplyr](https://www.rstudio.org/links/data_transformation_cheat_sheet)
+
+Other cheetsheets
+
+- Link: <https://rstudio.com/resources/cheatsheets/>
+- In RStudio: Help > Cheetsheets > ...
+
+---
+
+background-image: url(figure/data-transformation.jpg)
+background-position: 50% 50%
+background-size: 850px
+
+---
+
+background-image: url(figure/data-transformation2.jpg)
+background-position: 50% 50%
+background-size: 850px
 
 ---
 class: inverse, center, middle
@@ -425,7 +447,7 @@ class: inverse, center, middle
 
 # long vs. wide table
 
-![:scale 90%](figure/long-wide table.jpg)
+.center[![:scale 90%](figure/long-wide table.jpg)]
 
 ---
 
@@ -490,26 +512,14 @@ DT::datatable(ebg_long,
 boxplot(value ~ money, data = ebg_long)
 ```
 
----
-
-# [Cheetsheet](https://www.rstudio.org/links/data_transformation_cheat_sheet)
-
-.center[![:scale 90%](figure/data-transformation.jpg)]
 
 ---
 
-# [Cheetsheet](https://www.rstudio.org/links/data_transformation_cheat_sheet)
+# Practice 3
 
+試著用用看 subject 001 和 002，將兩人的資料合併成一組。
 
-.center[![:scale 90%](figure/data-transformation 2.jpg)]
-
----
-
-# RStudio cheetsheets 
-
-Link: <https://rstudio.com/resources/cheatsheets/>
-
-In RStudio: Help > Cheetsheets > ...
+有發現任何問題嗎？
 
 ---
 class: inverse, center, middle
@@ -541,15 +551,14 @@ class: inverse, center, middle
 ```{r eval=FALSE}
 mtcars
 ```
-.scroll-box-16[
-.small[
+
+.scroll-box-16[.small[
 ```{r echo=FALSE}
 DT::datatable(mtcars, 
               option = list(scrollX = TRUE,
                              fixedColumns = TRUE))
 ```
-]
-]
+]]
 
 ---
 
@@ -574,7 +583,7 @@ ggplot(mtcars, aes(x = mpg)) +
 
 ```{r}
 ggplot(mtcars, aes(x = mpg/length(mpg))) +
-  geom_histogram() + geom_density()
+  geom_histogram(fill = "cornflowerblue") + geom_density(color = "tomato")
 ```
 
 ---
@@ -593,7 +602,7 @@ ggplot(mtcars, aes(x = wt, y = mpg)) +
 ```{r}
 (g <- ggplot(mtcars, aes(x = wt, y = mpg,
                          color = factor(am), shape = factor(am))) +
-  geom_point())
+   geom_point())
 ```
 
 ---
@@ -610,8 +619,7 @@ g + facet_wrap(~cyl)
 # stat: linear regression
 
 ```{r}
-g1 <- g + stat_smooth(method = "lm")
-g1
+(g1 <- g + stat_smooth(method = "lm"))
 ```
 
 ---
@@ -638,7 +646,7 @@ g2 + theme_classic()
 
 ---
 
-# Practice 3: line chart
+# Practice 4: line chart
 
 試著用折線圖 `geom_line()` 對 `ebg` 這筆資料，看股票價格 (StockPrice) 隨回合數 (Trials) 的變化。
 
@@ -651,7 +659,7 @@ ggplot(ebg_g1, aes(x = Trials, y = StockPrice)) +
 
 ---
 
-# Practice 4
+# Practice 5: line chart (group)
 
 嘗試先用先前所學的，將 `ebg` 中 p1 和 p2 的現金放在同一個變項中，再利用 `geom_line()` 畫出兩為玩家在第 21 ~ 60 回和的現金變化折線圖。
 
@@ -662,7 +670,7 @@ ebg_g1 %>%
   pivot_longer(cols = c("p1Cash", "p2Cash"), 
                names_to = "player", values_to = "cash") %>% 
   ggplot(aes(x = Trials, y = cash, 
-             group = player, linetype = player)) + # <<
+             group = player, linetype = player)) + #<<
   geom_line()
 ```
 ]
@@ -674,7 +682,7 @@ ebg_g1 %>%
 - `vignette("dplyr", package = "dplyr")`
 - `vignette("two-table", package = "dplyr")`
 - `vignette("pivot", package = "tidyr")`
-- <https://blog.gtwang.org/r/ggplot2-tutorial-layer-by-layer-plotting/>
+- R ggplot2 教學：圖層式繪圖 <https://blog.gtwang.org/r/ggplot2-tutorial-layer-by-layer-plotting/>
 - R Graphic Cookbook <http://www.cookbook-r.com/Graphs/>
 - The R Graph Gallery <https://www.r-graph-gallery.com/>
 
