@@ -1,11 +1,22 @@
 .remark-slide-content {
   font-size: 28px;
+  padding-top: 10px;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-bottom: 10px;
 }
 .remark-code {
-  font-size: 24px;
+  font-size: 22px;
 }
 
-body { font-family: 'Times New Roman', 'Microsoft JhengHei'}
+.remark-slide-content h1{
+  margin-top: 10px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid grey;
+}
+
+
+body { font-family: 'Segoe UI', 'Microsoft JhengHei'}
 
 .Large { font-size: 160% }
 
@@ -48,11 +59,6 @@ body { font-family: 'Times New Roman', 'Microsoft JhengHei'}
   width: 30%;
 }
 
-h1{
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
 .title-slide h3:nth-of-type(-n+4) {
   font-size: 25px;
   margin: 1em;
@@ -63,13 +69,7 @@ h1{
 
 .inverse h1{
   color: #FF1B70;
-}
-
-.remark-slide-content {
-  padding-top: 10px;
-  padding-left: 40px;
-  padding-right: 40px;
-  padding-bottom: 10px;
+  border-bottom: none;
 }
 
 .black { color: black; }

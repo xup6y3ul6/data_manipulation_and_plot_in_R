@@ -1,8 +1,8 @@
 ---
-title: "Data Manipulation and Plot in R"
-subtitle: "dplyr, tidyr and ggplot2"
-author: "林子堯 楊昊紘"
-date: "2020/03/28 Sat."
+title: "心理及教育統計學下"
+subtitle: "Data Manipulation and Plot in R"
+author: "林子堯 鄭澈 楊昊紘"
+date: "2020/05/22 Fri."
 output:
   xaringan::moon_reader:
     css: [default, my-theme.css]
@@ -19,15 +19,18 @@ knitr::opts_chunk$set(echo = TRUE, comment = "",
                       dpi = 300, fig.align = "center", 
                       fig.width = 6, fig.asp = 0.618,
                       out.width = "80%")
+library(tidyverse)
 ```
 
-# Download: <http://tiny.cc/2ho0lz>
+# First of all
+1. Download slide and dataset
 
-.center[![](figure/qr.ioi.tw.png)]
+2. Install package
+```{r eval=FALSE}
+install.packages("tidyverse")
+library(tidyverse) # including dplyr, tidyr & ggplot2 ...
 
-```{r message=FALSE, warning=FALSE}
-# install.packages(tidyverse)
-library(tidyverse) # including dplyr, tidyr, & ggplot ...
+install.packages("nycflights13")
 ```
 
 ---
@@ -98,34 +101,34 @@ student
 
 # data.frame(): create
 
-load data
+Load example data
 ```{r}
-ebg_011 <- read.csv("data/011_b_1114_1_1_p1.csv", 
-                   fileEncoding = "UTF-8")
-head(ebg_011)
-class(ebg_011)
-````
+p1 <- read.csv("data/stock_player1.csv", 
+               header = TRUE,
+               fileEncoding = "UTF-8")
+class(p1)
+head(p1)
+```
 
 ---
 
 # data.frame(): read
 
 ```{r, eval=FALSE}
-# []
-ebg_011[1]
-ebg_011["p1Cash"]
+# [] 
+p1[1]
+p1["p1Cash"]
 
 # [,]
-ebg_011[1, 3]
-ebg_011[1:10, 2:3]
+p1[1, 3]
+p1[1:10, 2:3]
 
 # [[]]
-ebg_011[[1]]
+p1[[1]]
 
 # $
-ebg_011$StockPrice
-ebg_011$p1Decision[61:100]
-typeof(ebg_011)
+p1$StockPrice
+p1$p1Decision[61:100]
 ```
 
 ---
@@ -148,14 +151,13 @@ class: inverse, center, middle
 # tibble
 
 ```{r}
-# install.packages("nycflights13")
 data(flights, package = "nycflights13")
 flights
 ```
 
 ---
 
-# select()
+# select() columns
 
 ```{r}
 flight1 <- select(flights, month:day, carrier, arr_delay, 
@@ -165,7 +167,24 @@ flight1
 
 ---
 
-# filter()
+# select() columns
+
+```{r}
+names(flights)
+```
+
+
+```{r, eval=FALSE}
+select(flights, starts_with("arr"))
+select(flights, contains("arr"))
+select(flights, ends_with("time"))
+# help(select_helpers, package = "tidyselect")
+```
+
+
+---
+
+# filter() rows
 
 ```{r}
 filter(flight1, carrier == "HA", month %in% c(4, 5), 
@@ -211,7 +230,6 @@ mutate(flight1,
 
 # select(mutate())
 
-
 ```{r}
 select(
   mutate(flight1, 
@@ -230,6 +248,36 @@ select(
 transmute(flight1, 
           gain = arr_delay - dep_delay,
           speed = distance / air_time * 60)
+```
+
+---
+
+# Practice 1
+
+請用原始 R 內建的 function (data.frame 的基本操作)，將 p1 這筆資料建立新的欄位稱做 p1TotalAsset。其中
+$$TotalAsset = Cash + StockPrice*Stock $$
+
+--
+
+```{r}
+p1$p1TotalAsset = p1$p1Cash + p1$StockPrice * p1$p1Stock
+head(p1)
+```
+
+---
+
+# Practice 1
+
+匯入資料 `stock_player2.csv` 稱為 p2。試著利用 `dplyr` 套件中的 function 來建立 p2TotalAsset
+
+--
+
+```{r}
+p2 <- read.csv("data/stock_player2.csv", 
+               header = TRUE, 
+               fileEncoding = "UTF-8")
+p2 <- mutate(p2, p2TotalAsset = p2Cash + StockPrice * p2Stock)
+head(p2)
 ```
 
 ---
@@ -284,7 +332,6 @@ flight1 %>%
   summarise(delay_mean = mean(dep_delay, na.rm = TRUE), 
             delay_sd = sd(dep_delay, na.rm = TRUE))
 ```
-
 
 ---
 
@@ -388,40 +435,30 @@ df1 %>% inner_join(df2)
 
 ---
 
-# Practice 1
+# Practice 2
 
-試著將同一組的 subject 011 和 012 這兩筆資料給合併在同一個表格
+試將 p1 和 p2 這兩筆資料給合併，命名為 group1
 
 --
 
 ```{r}
-ebg_012 <- read.csv("data/012_b_1114_1_1_p2.csv", 
-                   fileEncoding = "UTF-8")
-ebg_g1 <- ebg_011 %>% 
-  left_join(ebg_012) 
+group1 <- p1 %>% 
+  left_join(p2) 
 ```
-
----
-
-# Practice 1
-
-試著將同一組的 subject 011 和 012 這兩筆資料給合併在同一個表格
-
-.scroll-box-18[.small[
-```{r echo=FALSE}
-DT::datatable(ebg_g1,
-              options = list(scrollX = TRUE,
-                         fixedColumns = TRUE))
-```
-]]
 
 ---
 
 # Practice 2
 
-試著用用看 subject 001 和 002，將兩人的資料合併成一組。
+試將 p1 和 p2 這兩筆資料給合併，命名為 group1
 
-有發現任何問題嗎？
+.scroll-box-18[.small[
+```{r echo=FALSE}
+DT::datatable(group1,
+              options = list(scrollX = TRUE,
+                         fixedColumns = TRUE))
+```
+]]
 
 ---
 
@@ -488,22 +525,23 @@ student_wide
 
 ---
 
-# Practice 2
+# Practice 3
 
-試著把剛剛同組的 `ebg` 資料，利用 `boxplot(y~group, data)`，依照不同「資產類型」(Cash, Stock, Asset)，畫出它分佈。
+將 group1 中依照 p1 & p2不同「資產類型」(Cash, Stock, TotalAsset)，用 `boxplot(y~group, data)` 畫出各自的分佈
 
 --
 .scroll-box-16[
 ```{r}
-ebg_long <- ebg_g1 %>% 
-    pivot_longer(
-      cols = c("p1Cash":"p1TotalAsset", "p2Cash":"p2TotalAsset"),
-      names_to = "money", values_to = "value")
+group1_long <- group1 %>% 
+  pivot_longer(
+    cols = c("p1Cash", "p1Stock", "p1TotalAsset",
+             "p2Cash", "p2Stock", "p2TotalAsset"),
+              names_to = "money", values_to = "value")
 ```
 
 .small[
 ```{r echo=FALSE}
-DT::datatable(ebg_long,
+DT::datatable(group1_long,
               options = list(scrollX = TRUE,
                              fixedColumns = TRUE))
 ```
@@ -514,10 +552,10 @@ DT::datatable(ebg_long,
 
 # Practice 3
 
-試著把剛剛同組的 `ebg` 資料，利用 `boxplot(y~group, data)`，依照不同「資產類型」(Cash, Stock, Asset)，畫出它分佈。
+將 group1 中依照 p1 & p2不同「資產類型」(Cash, Stock, TotalAsset)，用 `boxplot(y~group, data)` 畫出各自的分佈
 
 ```{r}
-boxplot(value ~ money, data = ebg_long)
+boxplot(value ~ money, data = group1_long)
 ```
 
 ---
@@ -545,7 +583,7 @@ class: inverse, center, middle
 
 ---
 
-# Data
+# data
 
 ```{r eval=FALSE}
 mtcars
@@ -623,15 +661,7 @@ g + facet_wrap(~cyl)
 
 ---
 
-# stat: loess regression
-
-```{r}
-(g1 <- g + stat_smooth(method = "loess"))
-```
-
----
-
-# labs: axis, legend, and plot labels
+# labs: axis, legend, and title
 
 ```{r, fig.asp = 0.5}
 (g2 <- g1 + 
@@ -655,12 +685,12 @@ g2 + theme_classic()
 
 # Practice 4: line chart
 
-試著用折線圖 `geom_line()` 對 `ebg` 這筆資料，看股票價格 (StockPrice) 隨回合數 (Trials) 的變化。
+試著用折線圖 `geom_line()` 對 group1 中的股票價格 (StockPrice) 隨回合數 (Trials) 的變化。
 
 --
 
 ```{r, fig.asp = 0.5}
-ggplot(ebg_g1, aes(x = Trials, y = StockPrice)) +
+ggplot(group1, aes(x = Trials, y = StockPrice)) +
   geom_line()
 ```
 
@@ -668,11 +698,13 @@ ggplot(ebg_g1, aes(x = Trials, y = StockPrice)) +
 
 # Practice 5: line chart (group)
 
-嘗試先用先前所學的，將 `ebg` 中 p1 和 p2 的現金放在同一個變項中，再利用 `geom_line()` 畫出兩為玩家在第 21 ~ 60 回和的現金變化折線圖。
+嘗試先用先前所學的，將 group1 中 p1 和 p2 的現金放在同一個變項中，再利用 `geom_line()` 畫出兩為玩家在第 21 ~ 60 回和的現金變化折線圖。
+
+--
 
 .scroll-box-16[
 ```{r}
-ebg_g1 %>% 
+group1 %>% 
   filter(Trials >= 21, Trials < 60) %>% 
   pivot_longer(cols = c("p1Cash", "p2Cash"), 
                names_to = "player", values_to = "cash") %>% 
