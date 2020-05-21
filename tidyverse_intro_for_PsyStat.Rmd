@@ -1,5 +1,5 @@
 ---
-title: "心理及教育統計學下"
+title: "心理及教育統計下"
 subtitle: "Data Manipulation and Plot in R"
 author: "林子堯 鄭澈 楊昊紘"
 date: "2020/05/22 Fri."
@@ -37,7 +37,7 @@ install.packages("nycflights13")
 
 # Outline
 
-.Large[
+.large[
 - introduction
 - data.frame
 - dplyr
@@ -644,7 +644,7 @@ ggplot(mtcars, aes(x = wt, y = mpg)) +
 
 ---
 
-# facet
+# facet: wrap
 
 ```{r}
 g + facet_wrap(~cyl)
@@ -674,12 +674,20 @@ g + facet_wrap(~cyl)
 
 ---
 
-# theme
+# theme: classic
 
 ```{r}
 g2 + theme_classic()
 ```
 
+---
+
+# coord: flip + theme: bw
+
+```{r}
+ggplot(iris, aes(x = Species, y = Petal.Length)) +
+  geom_boxplot() + coord_flip() + theme_bw()
+```
 
 ---
 
@@ -713,6 +721,18 @@ group1 %>%
   geom_line()
 ```
 ]
+
+---
+
+background-image: url(figure/data-visualization1.jpg)
+background-position: 50% 50%
+background-size: 850px
+
+---
+
+background-image: url(figure/data-visualization2.jpg)
+background-position: 50% 50%
+background-size: 850px
 
 ---
 
